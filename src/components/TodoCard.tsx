@@ -96,7 +96,14 @@ export const TodoCard = ({ title, desc, id, onDelete }: ITodo) => {
           </button>
         </div>
       </TodoCardContainer>
-      {isModalOpen && <Modal isEdit onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <Modal
+          title={title}
+          desc={desc}
+          isEdit
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </>
   );
 };

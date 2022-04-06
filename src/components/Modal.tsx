@@ -46,24 +46,33 @@ export const CloseButton = styled.button`
 interface IModal {
   onClose: () => void;
   isEdit?: boolean;
+  title?: string;
+  desc?: string;
 }
 
-export const Modal = ({ onClose, isEdit }: IModal) => {
+export const Modal = ({ onClose, isEdit, title, desc }: IModal) => {
   return (
     <AddTodoModalContainer>
       <AddTodoCard>
-        <form>
+        <form
+          onSubmit={(evt) => {
+            evt.preventDefault();
+            onClose();
+          }}
+        >
           <h2>{isEdit ? "EDIT TODO" : "ADD NEW TODO"}</h2>
 
           <Input
             placeholder="Enter todo title"
             label="Todo title"
             id="todo_title"
+            value={title}
           />
           <Input
             placeholder="Enter todo description"
             label="Todo description"
             id="todo_description"
+            value={desc}
           />
 
           <AddNewTodoButton mt={50}>
