@@ -89,7 +89,11 @@ const Todos = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [todos, setTodos] = useState<
     { title: string; desc: string; id: string }[]
-  >([]);
+  >(
+    localStorage.getItem("todos")
+      ? JSON.parse(localStorage.getItem("todos") ?? "")
+      : []
+  );
 
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
@@ -144,12 +148,22 @@ const Todos = () => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
   return (
     <TodosContainer>
       <h1>BOOKR TODOS</h1>
       {todos.length ? (
         todos.map(({ title, desc, id }) => (
-          <TodoCard onDelete={deleteTodo} title={title} desc={desc} id={id} />
+          <TodoCard
+            onDelete={deleteTodo}
+            title={title}
+            desc={desc}
+            id={id}
+            key={id}
+          />
         ))
       ) : (
         <p>You have no available task</p>
