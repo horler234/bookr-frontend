@@ -39,6 +39,7 @@ interface InputProps {
   onFocus?: FocusEventHandler<HTMLInputElement>;
   value?: string;
   onBlur?: (evt: React.FocusEvent<HTMLInputElement>) => void;
+  maxLength?: number;
 }
 
 export const Input = ({
@@ -49,6 +50,7 @@ export const Input = ({
   placeholder,
   id,
   value,
+  maxLength,
 }: InputProps) => {
   return (
     <>
@@ -61,6 +63,7 @@ export const Input = ({
         value={value}
         onFocus={onFocus}
         onBlur={onBlur}
+        maxLength={maxLength}
       />
     </>
   );

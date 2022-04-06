@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { SignWithGoogleButton } from "../components/GoogleButton";
@@ -7,6 +7,7 @@ import { CloseIcon } from "../components/icons/CloseIcon";
 import { Input } from "../components/Input";
 import { Modal } from "../components/Modal";
 import { TodoCard } from "../components/TodoCard";
+import { v4 } from "uuid";
 
 export const TodosContainer = styled.main`
   width: 90%;
@@ -86,10 +87,27 @@ export const AddNewTodoButton = styled.button<{ mt?: number }>`
 const Todos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<
+    { title: string; desc: string; id: string }[]
+  >([]);
 
-  const addTodo = () => {
-    const todo = JSON.parse(localStorage.getItem("todos") ?? "");
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+
+  const addTodo = (evt: React.FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    /* const todo = JSON.parse(localStorage.getItem("todos") ?? ""); */
+
+    if (title.length && desc.length) {
+      setTodos((todo) => [...todo, { title, desc, id: v4() }]);
+      setTitle("");
+      setDesc("");
+      setIsModalOpen(false);
+    }
+  };
+
+  const deleteTodo = (id: string) => {
+    setTodos((todo) => todo.filter((item) => item.id !== id));
   };
 
   const token = localStorage.getItem("token");
@@ -130,7 +148,9 @@ const Todos = () => {
     <TodosContainer>
       <h1>BOOKR TODOS</h1>
       {todos.length ? (
-        todos.map((todo) => <TodoCard />)
+        todos.map(({ title, desc, id }) => (
+          <TodoCard onDelete={deleteTodo} title={title} desc={desc} id={id} />
+        ))
       ) : (
         <p>You have no available task</p>
       )}
@@ -148,18 +168,24 @@ const Todos = () => {
       {isModalOpen && (
         <AddTodoModalContainer>
           <AddTodoCard>
-            <form>
+            <form onSubmit={addTodo}>
               <h2>ADD NEW TODO</h2>
 
               <Input
                 placeholder="Enter todo title"
                 label="Todo title"
                 id="todo_title"
+                value={title}
+                maxLength={20}
+                onChange={(evt) => setTitle(evt.target.value)}
               />
               <Input
                 placeholder="Enter todo description"
                 label="Todo description"
                 id="todo_description"
+                value={desc}
+                onChange={(evt) => setDesc(evt.target.value)}
+                maxLength={30}
               />
 
               <AddNewTodoButton mt={50}>ADD TODO</AddNewTodoButton>

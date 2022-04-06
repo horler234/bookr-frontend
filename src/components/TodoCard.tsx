@@ -25,7 +25,12 @@ export const TodoCardContainer = styled.div`
   p {
     font-size: 14px;
     margin-top: 8px;
+    text-align: left !important;
     transition: all 0.6s ease;
+  }
+
+  span {
+    font-size: 12px;
   }
 
   svg {
@@ -66,10 +71,11 @@ export const TodoCardContainer = styled.div`
 interface ITodo {
   title?: string;
   desc?: string;
-  id?: string;
+  id: string;
+  onDelete: (id: string) => void;
 }
 
-export const TodoCard = ({ title, desc, id }: ITodo) => {
+export const TodoCard = ({ title, desc, id, onDelete }: ITodo) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
@@ -85,7 +91,7 @@ export const TodoCard = ({ title, desc, id }: ITodo) => {
             <EditIcon />
           </button>
 
-          <button>
+          <button onClick={() => onDelete(id)}>
             <TrashIcon />
           </button>
         </div>
